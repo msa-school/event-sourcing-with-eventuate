@@ -3,6 +3,9 @@ import labshopeventuate.domain.*;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import io.eventuate.sync.AggregateRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
@@ -16,10 +19,14 @@ import javax.transaction.Transactional;
 @Transactional
 public class OrderController {
     @Autowired
-    OrderRepository orderRepository;
+    AggregateRepository<Order, OrderCommand> orderRepository;
 
 
-
+    @RequestMapping(method=RequestMethod.POST, name = "/orders")
+    public Order placeOrder(@RequestBody PlaceOrderCommand command){
+        
+        return orderRepository.save(command).getAggregate();
+    }
 
 
 }

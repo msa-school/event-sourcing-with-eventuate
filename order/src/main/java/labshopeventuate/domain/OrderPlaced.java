@@ -18,6 +18,6 @@ public class OrderPlaced implements Event{//extends AbstractEvent {
     private Long id;
     private Integer qty;
     private String customerId;
-    private Double itemId;
+    private Double productId;
 
 }
