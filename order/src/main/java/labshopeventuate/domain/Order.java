@@ -3,25 +3,24 @@ package labshopeventuate.domain;
 import labshopeventuate.domain.OrderPlaced;
 import labshopeventuate.domain.OrderCancelled;
 import labshopeventuate.OrderApplication;
-import javax.persistence.*;
-
-import io.eventuate.tram.events.publisher.DomainEventPublisher;
 
 import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+
+import io.eventuate.Event;
+import io.eventuate.ReflectiveMutableCommandProcessingAggregate;
 import lombok.Data;
 
 import java.util.Collections;
 import java.util.Date;
 
-@Entity
-@Table(name="Order_table")
-@Data
+import static io.eventuate.EventUtil.events;
 
-public class Order  {
+@Data
+public class Order extends ReflectiveMutableCommandProcessingAggregate<Order, OrderCommand> {
 
     
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
     
     private String productId;
@@ -36,37 +35,19 @@ public class Order  {
     
     private String address;
 
-    @PostPersist
-    public void onPostPersist(){
-        OrderPlaced orderPlaced = new OrderPlaced(this);
 
-        DomainEventPublisher publisher = OrderApplication.applicationContext.getBean(DomainEventPublisher.class);
-        publisher.publish(getClass(), getId(), Collections.singletonList(orderPlaced));
+
+    public List<Event> process(PlaceOrderCommand cmd) {
+        OrderPlaced orderPlaced = new OrderPlaced();
+        BeanUtils.copyProperties(cmd, orderPlaced);
+
+        return events(orderPlaced);
     }
-
-    @PrePersist
-    public void onPrePersist(){
-        // Get request from Inventory
-        //labshopeventuate.external.Inventory inventory =
-        //    Application.applicationContext.getBean(labshopeventuate.external.InventoryService.class)
-        //    .getInventory(/** mapping value needed */);
-
+    
+    public void apply(OrderPlaced event) {
+        BeanUtils.copyProperties(event, this);
     }
-    @PreRemove
-    public void onPreRemove(){
-
-        OrderCancelled orderCancelled = new OrderCancelled(this);
-
-    }
-
-    public static OrderRepository repository(){
-        OrderRepository orderRepository = OrderApplication.applicationContext.getBean(OrderRepository.class);
-        return orderRepository;
-    }
-
-
-
-
+    
 
 
 }
