@@ -19,7 +19,7 @@ public class OrderController {
     AggregateRepository<Order, OrderCommand> orderRepository;
 
 
-    @RequestMapping(method=RequestMethod.POST, path = "/orders/")
+    @RequestMapping(method=RequestMethod.POST, path = "/orders")
     public Order placeOrder(@RequestBody PlaceOrderCommand command){
     
         return aggregateWithId(orderRepository.save(command));

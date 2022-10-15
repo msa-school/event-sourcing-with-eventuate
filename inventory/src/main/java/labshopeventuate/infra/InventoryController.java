@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import io.eventuate.sync.AggregateRepository;
 import io.eventuate.EntityWithIdAndVersion;
+import io.eventuate.EntityWithMetadata;
 import io.eventuate.SaveOptions;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class InventoryController {
     AggregateRepository<Inventory, InventoryCommand> inventoryRepository;
 
 
-    @RequestMapping(path="/inventories")
+    @RequestMapping(path="/inventories", method=RequestMethod.POST)
     public Inventory createInventory(@RequestBody SetInventoryCommand setInventoryCommand){
         return aggregateWithId(
             inventoryRepository.save(
@@ -31,6 +32,20 @@ public class InventoryController {
                 Optional.of(new SaveOptions().withId(setInventoryCommand.getProductId()))
             )
         );
+    }
+
+    @RequestMapping(path="/inventories/{id}", method=RequestMethod.GET)
+    public Inventory getInventory(@PathVariable("id") String productId){
+        EntityWithMetadata<Inventory> result = 
+            inventoryRepository.find(
+                productId
+            );
+        
+        Inventory inventory = result.getEntity();
+        inventory.setId(productId);
+
+        return inventory;
+        
     }
 
     public Inventory aggregateWithId(EntityWithIdAndVersion<Inventory> result){

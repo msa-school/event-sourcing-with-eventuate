@@ -29,4 +29,9 @@ public class InventoryApplication {
       return new AggregateRepository<>(Inventory.class, eventStore);
     }
   
+    @Bean
+    public PolicyHandler policyHandler() {
+      return new PolicyHandler();
+    }
+  
 }
