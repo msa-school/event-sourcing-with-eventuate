@@ -28,5 +28,16 @@ public class OrderController {
         return orderRepository.save(command).getAggregate();
     }
 
+    @RequestMapping(method=RequestMethod.DELETE, name = "/orders/{id}")
+    public Order placeOrder(@PathVariable("id") String id){
+        CancelOrderCommand cancelOrderCommand = new CancelOrderCommand();
+        
+        return orderRepository.update(id, cancelOrderCommand).getAggregate();
+    }
+
+    @RequestMapping(method=RequestMethod.GET, name = "/orders/{id}")
+    public Order getOrder(@PathVariable("id") String id){
+        return orderRepository.find(id).getEntity();
+    }
 
 }

@@ -21,7 +21,7 @@ import static io.eventuate.EventUtil.events;
 public class Order extends ReflectiveMutableCommandProcessingAggregate<Order, OrderCommand> {
 
     
-    private Long id;
+   // private String id;
     
     private String productId;
     
@@ -40,6 +40,7 @@ public class Order extends ReflectiveMutableCommandProcessingAggregate<Order, Or
     public List<Event> process(PlaceOrderCommand cmd) {
         OrderPlaced orderPlaced = new OrderPlaced();
         BeanUtils.copyProperties(cmd, orderPlaced);
+       // orderPlaced.setId(java.util.UUID.randomUUID().toString());
 
         return events(orderPlaced);
     }
@@ -49,5 +50,16 @@ public class Order extends ReflectiveMutableCommandProcessingAggregate<Order, Or
     }
     
 
+    public List<Event> process(CancelOrderCommand cmd) {
+        OrderCancelled orderCancelled = new OrderCancelled();
+        //orderCancelled.setId(cmd.getId());
+
+        return events(orderCancelled);
+    }
+
+    public void apply(OrderCancelled event){
+        setStatus("CANCELLED");
+        
+    }
 
 }
