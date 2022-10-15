@@ -8,6 +8,6 @@ import lombok.Data;
 public class PlaceOrderCommand implements OrderCommand{
 
     int qty;
-    String proudctId;
+    String productId;
     
 }

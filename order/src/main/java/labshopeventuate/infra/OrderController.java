@@ -4,6 +4,7 @@ import labshopeventuate.domain.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.eventuate.Aggregate;
 import io.eventuate.EntityWithIdAndVersion;
 import io.eventuate.sync.AggregateRepository;
 
@@ -25,25 +26,30 @@ public class OrderController {
 
     @RequestMapping(method=RequestMethod.POST, path = "/orders/")
     public Order placeOrder(@RequestBody PlaceOrderCommand command){
-        
-        EntityWithIdAndVersion<Order> result = orderRepository.save(command);
-        Order order = result.getAggregate();
-
-        order.setId(result.getEntityId());
-
-        return order;
+    
+        return aggregateWithId(orderRepository.save(command));
     }
 
     @RequestMapping(method=RequestMethod.DELETE, path = "/orders/{id}")
     public Order placeOrder(@PathVariable("id") String id){
         CancelOrderCommand cancelOrderCommand = new CancelOrderCommand();
         
-        return orderRepository.update(id, cancelOrderCommand).getAggregate();
+        return aggregateWithId(orderRepository.update(id, cancelOrderCommand));
     }
 
     @RequestMapping(method=RequestMethod.GET, path = "/orders/{id}")
     public Order getOrder(@PathVariable("id") String id){
-        return orderRepository.find(id).getEntity();
+        Order order = orderRepository.find(id).getEntity();
+        order.setId(id);
+
+        return order;
+    }
+
+    public Order aggregateWithId(EntityWithIdAndVersion<Order> result){
+        Order order = result.getAggregate();
+        order.setId(result.getEntityId());
+
+        return order;
     }
 
 }
