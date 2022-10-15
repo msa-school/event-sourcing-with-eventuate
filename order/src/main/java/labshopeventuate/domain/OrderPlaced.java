@@ -14,10 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderPlaced implements Event{//extends AbstractEvent {
-
-    //private String id;
-    private Integer qty;
-    private String customerId;
-    private Double productId;
-
+    int qty;
+    String proudctId;
+    
 }

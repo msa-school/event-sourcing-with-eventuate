@@ -21,7 +21,7 @@ import static io.eventuate.EventUtil.events;
 public class Order extends ReflectiveMutableCommandProcessingAggregate<Order, OrderCommand> {
 
     
-   // private String id;
+    private String id;
     
     private String productId;
     
