@@ -8,11 +8,9 @@ import io.eventuate.Event;
 
 @Data
 @ToString
-public class OrderCancelled implements Event {
+public class InventoryCreated implements Event {
 
-    private Long id;
-    private String productId;
-    private Integer qty;
+    private Long stock;
 }
 
 

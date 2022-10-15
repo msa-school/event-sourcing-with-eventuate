@@ -4,10 +4,11 @@ import labshopeventuate.domain.*;
 import lombok.*;
 import java.util.*;
 
-import io.eventuate.tram.events.common.DomainEvent;
+import io.eventuate.Event;
+
 @Data
 @ToString
-public class OrderPlaced implements DomainEvent {
+public class OrderPlaced implements Event {
 
     private Long id;
     private String productId;

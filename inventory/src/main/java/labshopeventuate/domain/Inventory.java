@@ -1,86 +1,52 @@
 package labshopeventuate.domain;
 
-import labshopeventuate.InventoryApplication;
-import javax.persistence.*;
+import io.eventuate.Event;
+import io.eventuate.ReflectiveMutableCommandProcessingAggregate;
+
 import java.util.List;
+
+import org.springframework.beans.BeanUtils;
+
 import lombok.Data;
-import java.util.Date;
 
-@Entity
-@Table(name="Inventory_table")
+import static io.eventuate.EventUtil.events;
+
+
 @Data
+public class Inventory extends ReflectiveMutableCommandProcessingAggregate<Inventory, InventoryCommand> {
 
-public class Inventory  {
-
-    
-    @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
-    
-    
-    
-    
-    
-    private Long id;
-    
-    
-    
-    
+    private String id;
     
     private Long stock;
 
-    @PostPersist
-    public void onPostPersist(){
+    public List<Event> process(SetInventoryCommand command){
+        InventoryCreated inventoryCreated = new InventoryCreated();
+        BeanUtils.copyProperties(command, inventoryCreated);
+        return events(inventoryCreated);        
     }
 
-    public static InventoryRepository repository(){
-        InventoryRepository inventoryRepository = InventoryApplication.applicationContext.getBean(InventoryRepository.class);
-        return inventoryRepository;
+    public void apply(InventoryCreated event){
+        setStock(event.getStock()); 
     }
 
-
-
-
-    public static void decreaseStock(OrderPlaced orderPlaced){
-
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
-
-        */
-
-        /** Example 2:  finding and process */
-        
-        repository().findById(Long.valueOf(orderPlaced.getProductId())).ifPresent(inventory->{
-            
-            inventory.setStock(inventory.getStock() - orderPlaced.getQty()); // do something
-            repository().save(inventory);
-
-
-         });
-       
-
-        
+    public List<Event> process(DecreaseStockCommand command){
+        InventoryDecreased event = new InventoryDecreased();
+        BeanUtils.copyProperties(command, event);
+        return events(event);
     }
-    public static void increaseStock(OrderCancelled orderCancelled){
 
-        /** Example 1:  new item 
-        Inventory inventory = new Inventory();
-        repository().save(inventory);
+    public void apply(InventoryDecreased stockDecreased){
+        setStock(getStock() - stockDecreased.getQty()); 
+    }
 
-        */
+    public List<Event> process(IncreaseStockCommand command){
+        InventoryIncreased event = new InventoryIncreased();
+        BeanUtils.copyProperties(command, event);
+        return events(event);
+    }
 
-        /** Example 2:  finding and process
-        
-        repository().findById(orderCancelled.get???()).ifPresent(inventory->{
-            
-            inventory // do something
-            repository().save(inventory);
-
-
-         });
-        */
-
-        
+    public void apply(InventoryIncreased event){
+        setStock(getStock() + event.getQty()); 
     }
 
 

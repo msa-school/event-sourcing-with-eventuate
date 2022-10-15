@@ -20,6 +20,7 @@
 		<spring-cloud-stream.version>Germantown.SR1</spring-cloud-stream.version>
 		<cucumber.version>6.8.1</cucumber.version>
 		<eventuate-tram.version>0.31.0.RELEASE</eventuate-tram.version>
+		<eventuateLocalVersion>0.39.0.RELEASE</eventuateLocalVersion>
 		<eventuateTramViewSupportVersion>0.7.0.RELEASE</eventuateTramViewSupportVersion>
 	</properties>
 
@@ -56,40 +57,20 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-sleuth</artifactId>
 		</dependency>
-		<!-- <dependency>
-			<groupId>io.eventuate.platform</groupId>
-			<artifactId>eventuate-platform-dependencies</artifactId>
-			<version>2022.2.RELEASE</version>
-		</dependency> -->
-		<dependency>
-			<groupId>io.eventuate.tram.core</groupId>
-			<artifactId>eventuate-tram-spring-jdbc-kafka</artifactId>
-			<version>${eventuate-tram.version} </version>
-		</dependency>
-		<dependency>
-			<groupId>io.eventuate.tram.core</groupId>
-			<artifactId>eventuate-tram-spring-events</artifactId>
-			<version>${eventuate-tram.version}</version>
-		</dependency>
 
-		<dependency>
-			<groupId>io.eventuate.tram.core</groupId>
-			<artifactId>eventuate-tram-spring-optimistic-locking</artifactId>
-			<version>${eventuate-tram.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>io.eventuate.tram.core</groupId>
-			<artifactId>eventuate-tram-spring-events-starter</artifactId>
-			<version>${eventuate-tram.version}</version>
-		</dependency>
+
         <dependency>
-            <groupId>io.eventuate.tram.view.support</groupId>
-            <artifactId>eventuate-tram-view-support-rebuild</artifactId>
-            <version>${eventuateTramViewSupportVersion}</version>
+            <groupId>io.eventuate.local.java</groupId>
+            <artifactId>eventuate-local-java-spring-jdbc-starter</artifactId>
+            <version>${eventuateLocalVersion}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.eventuate.local.java</groupId>
+            <artifactId>eventuate-client-java-spring-jdbc</artifactId>
+            <version>${eventuateLocalVersion}</version>
         </dependency>
 
-	
-
+		
 		<!-- kafka streams -->
 		<!-- <dependency>
 			<groupId>org.springframework.cloud</groupId>

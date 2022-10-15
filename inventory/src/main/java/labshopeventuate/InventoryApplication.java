@@ -6,9 +6,10 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import io.eventuate.tram.events.subscriber.DomainEventDispatcher;
-import io.eventuate.tram.events.subscriber.DomainEventDispatcherFactory;
-import io.eventuate.tram.events.subscriber.DomainEventHandlersBuilder;
+import io.eventuate.sync.AggregateRepository;
+import io.eventuate.sync.EventuateAggregateStore;
+import labshopeventuate.domain.Inventory;
+import labshopeventuate.domain.InventoryCommand;
 import labshopeventuate.domain.OrderPlaced;
 import labshopeventuate.infra.PolicyHandler;
 
@@ -24,12 +25,8 @@ public class InventoryApplication {
     }
 
     @Bean
-    public DomainEventDispatcher domainEventDispatcher(DomainEventDispatcherFactory domainEventDispatcherFactory) {
-      return domainEventDispatcherFactory.make("orderServiceEvents", DomainEventHandlersBuilder
-      .forAggregateType("labshopeventuate.domain.Order")
-      .onEvent(OrderPlaced.class, PolicyHandler::wheneverOrderPlaced_DecreaseStock)
-      //.onEvent(OrderCancelledEvent.class, this::handleOrderCancelledEvent)
-      .build());
+    public AggregateRepository<Inventory, InventoryCommand> orderRepository(EventuateAggregateStore eventStore) {
+      return new AggregateRepository<>(Inventory.class, eventStore);
     }
   
 }
